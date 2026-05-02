@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UFC 선수 명단 보기</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0b0d12;
+      --panel: rgba(16, 20, 30, 0.86);
+      --panel-border: rgba(255, 255, 255, 0.08);
+      --text: #f5f7fb;
+      --muted: #a8b0c2;
+      --accent: #d20f2a;
+      --accent-strong: #ff415d;
+      --card: rgba(255, 255, 255, 0.05);
+      --shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(210, 15, 42, 0.28), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.08), transparent 26%),
+        linear-gradient(135deg, #07090d 0%, #121720 55%, #090b10 100%);
+      padding: 32px 18px 56px;
+    }
+
+    .wrap {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 32px;
+      padding: 32px;
+      background:
+        linear-gradient(140deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+        rgba(10, 14, 22, 0.92);
+      border: 1px solid var(--panel-border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: auto -80px -120px auto;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(210, 15, 42, 0.32), transparent 68%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(210, 15, 42, 0.14);
+      color: #ffb6c1;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+      font-size: clamp(2.2rem, 4vw, 4.2rem);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 700px;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.65;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin-top: 28px;
+    }
+
+    .action-btn,
+    .ghost-btn {
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease, background 0.2s ease;
+      font-family: inherit;
+    }
+
+    .action-btn {
+      padding: 16px 24px;
+      border-radius: 18px;
+      font-size: 1rem;
+      font-weight: 900;
+      color: white;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+      box-shadow: 0 18px 36px rgba(210, 15, 42, 0.3);
+    }
+
+    .ghost-btn {
+      padding: 15px 20px;
+      border-radius: 18px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .action-btn:hover,
+    .ghost-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.05);
+    }
+
+    .status {
+      margin-left: auto;
+      min-width: 210px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+      margin-top: 22px;
+    }
+
+    .panel {
+      border-radius: 28px;
+      padding: 24px;
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .summary {
+      display: grid;
+      gap: 14px;
+    }
+
+    .summary-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 6px;
+    }
+
+    .summary-value {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .summary-note {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .roster-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .roster-header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .fighter-card {
+      opacity: 0;
+      transform: translateY(22px) scale(0.98);
+      animation: reveal 0.5s ease forwards;
+      padding: 18px;
+      border-radius: 20px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04)),
+        rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fighter-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(210, 15, 42, 0.22), transparent 68%);
+    }
+
+    .weight-class {
+      display: inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(210, 15, 42, 0.14);
+      color: #ffc7d0;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    .fighter-name {
+      font-size: 1.2rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin: 0 0 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .fighter-meta {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      position: relative;
+      z-index: 1;
+    }
+
+    .empty {
+      display: grid;
+      place-items: center;
+      min-height: 360px;
+      border-radius: 24px;
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      text-align: center;
+      padding: 24px;
+      line-height: 1.7;
+    }
+
+    @keyframes reveal {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (max-width: 860px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .status {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 560px) {
+      body {
+        padding: 18px 12px 36px;
+      }
+
+      .hero,
+      .panel {
+        padding: 20px;
+        border-radius: 24px;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .action-btn,
+      .ghost-btn {
+        width: 100%;
+      }
+
+      .roster-header {
+        flex-direction: column;
+        align-items: start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <span class="eyebrow">Fight Night Roster</span>
+      <h1>버튼 한 번으로 보는<br>UFC 선수 명단</h1>
+      <p>
+        아래 버튼을 누르면 대표적인 UFC 선수들이 체급별 카드로 정리되어 나타납니다.
+        다시 누르면 순서가 섞여 새롭게 볼 수 있습니다.
+      </p>
+
+      <div class="toolbar">
+        <button class="action-btn" id="showRosterButton">선수 명단 보기</button>
+        <button class="ghost-btn" id="resetButton">초기화</button>
+        <div class="status" id="statusBox">아직 명단이 표시되지 않았습니다.</div>
+      </div>
+    </section>
+
+    <section class="dashboard">
+      <aside class="panel">
+        <h2>명단 정보</h2>
+        <div class="summary">
+          <div class="summary-card">
+            <div class="summary-label">총 선수 수</div>
+            <div class="summary-value" id="fighterCount">0명</div>
+            <div class="summary-note">버튼을 누르면 현재 준비된 선수 수가 표시됩니다.</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">포함 체급</div>
+            <div class="summary-value" id="divisionCount">0개</div>
+            <div class="summary-note">플라이급부터 헤비급까지 대표 체급들을 담았습니다.</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">표시 방식</div>
+            <div class="summary-note">
+              버튼 클릭 시 카드가 순차적으로 등장하도록 구성했습니다.
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="panel">
+        <div class="roster-header">
+          <div>
+            <h2>UFC 선수 명단</h2>
+            <p>대표 선수 예시를 체급과 출신 국가, 주요 스타일과 함께 보여줍니다.</p>
+          </div>
+        </div>
+
+        <div id="rosterContainer" class="empty">
+          버튼을 누르면 이 영역에 UFC 선수 명단이 나타납니다.
+        </div>
+      </main>
+    </section>
+  </div>
+
+  <script>
+    const fighters = [
+      { name: "Alexandre Pantoja", division: "Flyweight", country: "Brazil", style: "Well-rounded / Grappling" },
+      { name: "Brandon Moreno", division: "Flyweight", country: "Mexico", style: "Boxing / Scrambling" },
+      { name: "Merab Dvalishvili", division: "Bantamweight", country: "Georgia", style: "Pressure Wrestling" },
+      { name: "Sean O'Malley", division: "Bantamweight", country: "United States", style: "Precision Striking" },
+      { name: "Alexander Volkanovski", division: "Featherweight", country: "Australia", style: "Pressure Boxing" },
+      { name: "Max Holloway", division: "Featherweight", country: "United States", style: "Volume Striking" },
+      { name: "Islam Makhachev", division: "Lightweight", country: "Russia", style: "Sambo / Grappling" },
+      { name: "Charles Oliveira", division: "Lightweight", country: "Brazil", style: "Muay Thai / BJJ" },
+      { name: "Belal Muhammad", division: "Welterweight", country: "United States", style: "Pressure Wrestling" },
+      { name: "Leon Edwards", division: "Welterweight", country: "United Kingdom", style: "Kickboxing" },
+      { name: "Dricus du Plessis", division: "Middleweight", country: "South Africa", style: "Aggressive MMA" },
+      { name: "Israel Adesanya", division: "Middleweight", country: "New Zealand", style: "Kickboxing" },
+      { name: "Alex Pereira", division: "Light Heavyweight", country: "Brazil", style: "Power Striking" },
+      { name: "Magomed Ankalaev", division: "Light Heavyweight", country: "Russia", style: "Kickboxing / Wrestling" },
+      { name: "Jon Jones", division: "Heavyweight", country: "United States", style: "Creative MMA" },
+      { name: "Tom Aspinall", division: "Heavyweight", country: "United Kingdom", style: "Boxing / Jiu-Jitsu" }
+    ];
+
+    const showRosterButton = document.getElementById("showRosterButton");
+    const resetButton = document.getElementById("resetButton");
+    const rosterContainer = document.getElementById("rosterContainer");
+    const statusBox = document.getElementById("statusBox");
+    const fighterCount = document.getElementById("fighterCount");
+    const divisionCount = document.getElementById("divisionCount");
+
+    function shuffle(list) {
+      const copied = [...list];
+      for (let i = copied.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copied[i], copied[j]] = [copied[j], copied[i]];
+      }
+      return copied;
+    }
+
+    function renderRoster() {
+      const shuffledFighters = shuffle(fighters);
+      const divisions = new Set(shuffledFighters.map((fighter) => fighter.division));
+
+      rosterContainer.className = "grid";
+      rosterContainer.innerHTML = shuffledFighters.map((fighter, index) => `
+        <article class="fighter-card" style="animation-delay: ${index * 0.06}s">
+          <span class="weight-class">${fighter.division}</span>
+          <h3 class="fighter-name">${fighter.name}</h3>
+          <p class="fighter-meta">국가: ${fighter.country}</p>
+          <p class="fighter-meta">스타일: ${fighter.style}</p>
+        </article>
+      `).join("");
+
+      fighterCount.textContent = `${shuffledFighters.length}명`;
+      divisionCount.textContent = `${divisions.size}개`;
+      statusBox.textContent = `선수 명단이 표시되었습니다. 현재 ${shuffledFighters.length}명의 대표 선수를 확인할 수 있습니다.`;
+    }
+
+    function resetRoster() {
+      rosterContainer.className = "empty";
+      rosterContainer.innerHTML = "버튼을 누르면 이 영역에 UFC 선수 명단이 나타납니다.";
+      fighterCount.textContent = "0명";
+      divisionCount.textContent = "0개";
+      statusBox.textContent = "아직 명단이 표시되지 않았습니다.";
+    }
+
+    showRosterButton.addEventListener("click", renderRoster);
+    resetButton.addEventListener("click", resetRoster);
+  </script>
+</body>
+</html>
