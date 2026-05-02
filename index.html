@@ -3,22 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UFC 선수 명단 보기</title>
+  <title>오늘의 명언 추천</title>
   <style>
     * {
       box-sizing: border-box;
     }
 
     :root {
-      --bg: #0b0d12;
-      --panel: rgba(16, 20, 30, 0.86);
-      --panel-border: rgba(255, 255, 255, 0.08);
-      --text: #f5f7fb;
-      --muted: #a8b0c2;
-      --accent: #d20f2a;
-      --accent-strong: #ff415d;
-      --card: rgba(255, 255, 255, 0.05);
-      --shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
+      --bg-top: #f7efe4;
+      --bg-bottom: #dbe7d3;
+      --panel: rgba(255, 252, 247, 0.82);
+      --panel-border: rgba(98, 75, 46, 0.12);
+      --text: #2d241d;
+      --muted: #6f6255;
+      --accent: #b66a2f;
+      --accent-deep: #8f4d20;
+      --accent-soft: #f1dcc7;
+      --shadow: 0 24px 60px rgba(93, 71, 48, 0.16);
     }
 
     body {
@@ -27,38 +28,51 @@
       font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(210, 15, 42, 0.28), transparent 32%),
-        radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.08), transparent 26%),
-        linear-gradient(135deg, #07090d 0%, #121720 55%, #090b10 100%);
-      padding: 32px 18px 56px;
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(182, 106, 47, 0.14), transparent 30%),
+        linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      display: grid;
+      place-items: center;
+      padding: 24px;
     }
 
-    .wrap {
-      width: min(1120px, 100%);
-      margin: 0 auto;
+    .page {
+      width: min(920px, 100%);
     }
 
-    .hero {
+    .card {
       position: relative;
       overflow: hidden;
+      padding: 36px;
       border-radius: 32px;
-      padding: 32px;
-      background:
-        linear-gradient(140deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
-        rgba(10, 14, 22, 0.92);
+      background: var(--panel);
       border: 1px solid var(--panel-border);
       box-shadow: var(--shadow);
       backdrop-filter: blur(18px);
     }
 
-    .hero::before {
+    .card::before,
+    .card::after {
       content: "";
       position: absolute;
-      inset: auto -80px -120px auto;
-      width: 260px;
-      height: 260px;
-      background: radial-gradient(circle, rgba(210, 15, 42, 0.32), transparent 68%);
+      border-radius: 50%;
       pointer-events: none;
+    }
+
+    .card::before {
+      width: 220px;
+      height: 220px;
+      right: -70px;
+      top: -70px;
+      background: radial-gradient(circle, rgba(182, 106, 47, 0.18), transparent 70%);
+    }
+
+    .card::after {
+      width: 180px;
+      height: 180px;
+      left: -50px;
+      bottom: -60px;
+      background: radial-gradient(circle, rgba(123, 157, 102, 0.16), transparent 70%);
     }
 
     .eyebrow {
@@ -67,8 +81,8 @@
       gap: 8px;
       padding: 8px 14px;
       border-radius: 999px;
-      background: rgba(210, 15, 42, 0.14);
-      color: #ffb6c1;
+      background: rgba(182, 106, 47, 0.12);
+      color: var(--accent-deep);
       font-size: 0.82rem;
       font-weight: 800;
       letter-spacing: 0.08em;
@@ -77,381 +91,268 @@
 
     h1 {
       margin: 18px 0 12px;
-      font-size: clamp(2.2rem, 4vw, 4.2rem);
-      line-height: 0.95;
+      font-size: clamp(2.4rem, 5vw, 4.6rem);
+      line-height: 0.96;
       letter-spacing: -0.05em;
     }
 
-    .hero p {
-      margin: 0;
-      max-width: 700px;
-      color: var(--muted);
-      font-size: 1.02rem;
-      line-height: 1.65;
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      align-items: center;
-      margin-top: 28px;
-    }
-
-    .action-btn,
-    .ghost-btn {
-      border: none;
-      cursor: pointer;
-      transition: transform 0.2s ease, filter 0.2s ease, background 0.2s ease;
-      font-family: inherit;
-    }
-
-    .action-btn {
-      padding: 16px 24px;
-      border-radius: 18px;
-      font-size: 1rem;
-      font-weight: 900;
-      color: white;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
-      box-shadow: 0 18px 36px rgba(210, 15, 42, 0.3);
-    }
-
-    .ghost-btn {
-      padding: 15px 20px;
-      border-radius: 18px;
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .action-btn:hover,
-    .ghost-btn:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.05);
-    }
-
-    .status {
-      margin-left: auto;
-      min-width: 210px;
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.5;
-    }
-
-    .dashboard {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 20px;
-      margin-top: 22px;
-    }
-
-    .panel {
-      border-radius: 28px;
-      padding: 24px;
-      background: var(--panel);
-      border: 1px solid var(--panel-border);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-    }
-
-    .panel h2 {
-      margin: 0 0 14px;
-      font-size: 1.15rem;
-      letter-spacing: -0.02em;
-    }
-
-    .summary {
-      display: grid;
-      gap: 14px;
-    }
-
-    .summary-card {
-      padding: 16px;
-      border-radius: 18px;
-      background: var(--card);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .summary-label {
-      color: var(--muted);
-      font-size: 0.82rem;
-      margin-bottom: 6px;
-    }
-
-    .summary-value {
-      font-size: 1.5rem;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-    }
-
-    .summary-note {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 0.88rem;
-      line-height: 1.5;
-    }
-
-    .roster-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .roster-header p {
-      margin: 6px 0 0;
-      color: var(--muted);
-      line-height: 1.5;
-      font-size: 0.92rem;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-    }
-
-    .fighter-card {
-      opacity: 0;
-      transform: translateY(22px) scale(0.98);
-      animation: reveal 0.5s ease forwards;
-      padding: 18px;
-      border-radius: 20px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04)),
-        rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .fighter-card::after {
-      content: "";
-      position: absolute;
-      right: -30px;
-      top: -30px;
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(210, 15, 42, 0.22), transparent 68%);
-    }
-
-    .weight-class {
-      display: inline-flex;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(210, 15, 42, 0.14);
-      color: #ffc7d0;
-      font-size: 0.74rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      margin-bottom: 12px;
-    }
-
-    .fighter-name {
-      font-size: 1.2rem;
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      margin: 0 0 8px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .fighter-meta {
+    .intro {
+      max-width: 620px;
       margin: 0;
       color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.55;
-      position: relative;
-      z-index: 1;
-    }
-
-    .empty {
-      display: grid;
-      place-items: center;
-      min-height: 360px;
-      border-radius: 24px;
-      border: 1px dashed rgba(255, 255, 255, 0.15);
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--muted);
-      text-align: center;
-      padding: 24px;
+      font-size: 1.04rem;
       line-height: 1.7;
     }
 
-    @keyframes reveal {
+    .today {
+      margin-top: 20px;
+      color: var(--accent-deep);
+      font-size: 0.96rem;
+      font-weight: 700;
+    }
+
+    .quote-panel {
+      margin-top: 30px;
+      padding: 30px;
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 248, 239, 0.92)),
+        var(--accent-soft);
+      border: 1px solid rgba(182, 106, 47, 0.14);
+      min-height: 280px;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    blockquote {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      line-height: 1.45;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .author {
+      margin: 0;
+      color: var(--accent-deep);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .message {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.98rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    .primary-btn {
+      padding: 16px 24px;
+      border-radius: 18px;
+      color: #fffaf5;
+      font-size: 1rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+      box-shadow: 0 18px 30px rgba(143, 77, 32, 0.22);
+    }
+
+    .secondary-btn {
+      padding: 16px 22px;
+      border-radius: 18px;
+      color: var(--text);
+      font-size: 0.98rem;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(98, 75, 46, 0.12);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.03);
+    }
+
+    .status {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(98, 75, 46, 0.1);
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.94rem;
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.45s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
       to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
       }
     }
 
-    @media (max-width: 860px) {
-      .dashboard {
-        grid-template-columns: 1fr;
-      }
-
-      .status {
-        margin-left: 0;
-        width: 100%;
-      }
-    }
-
-    @media (max-width: 560px) {
+    @media (max-width: 640px) {
       body {
-        padding: 18px 12px 36px;
+        padding: 14px;
       }
 
-      .hero,
-      .panel {
-        padding: 20px;
+      .card {
+        padding: 22px;
         border-radius: 24px;
       }
 
-      .toolbar {
-        flex-direction: column;
-        align-items: stretch;
+      .quote-panel {
+        min-height: 320px;
+        padding: 22px;
       }
 
-      .action-btn,
-      .ghost-btn {
+      .controls {
+        flex-direction: column;
+      }
+
+      .primary-btn,
+      .secondary-btn {
         width: 100%;
-      }
-
-      .roster-header {
-        flex-direction: column;
-        align-items: start;
       }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="hero">
-      <span class="eyebrow">Fight Night Roster</span>
-      <h1>버튼 한 번으로 보는<br>UFC 선수 명단</h1>
-      <p>
-        아래 버튼을 누르면 대표적인 UFC 선수들이 체급별 카드로 정리되어 나타납니다.
-        다시 누르면 순서가 섞여 새롭게 볼 수 있습니다.
+  <main class="page">
+    <section class="card">
+      <span class="eyebrow">Daily Quote</span>
+      <h1>버튼을 누르면<br />오늘의 명언을 추천해드려요</h1>
+      <p class="intro">
+        짧은 문장 하나가 하루의 분위기를 바꿀 때가 있습니다.
+        아래 버튼을 눌러 오늘 마음에 남길 명언을 만나보세요.
       </p>
+      <p class="today" id="todayText"></p>
 
-      <div class="toolbar">
-        <button class="action-btn" id="showRosterButton">선수 명단 보기</button>
-        <button class="ghost-btn" id="resetButton">초기화</button>
-        <div class="status" id="statusBox">아직 명단이 표시되지 않았습니다.</div>
+      <div class="quote-panel fade-in" id="quotePanel">
+        <div class="label">Today's Pick</div>
+        <blockquote id="quoteText">"오늘의 명언을 아직 추천받지 않았습니다."</blockquote>
+        <p class="author" id="authorText">버튼을 눌러 시작해보세요.</p>
+        <p class="message" id="messageText">지금의 기분에 어울리는 한 문장을 골라 보여드립니다.</p>
       </div>
+
+      <div class="controls">
+        <button class="primary-btn" id="recommendButton">오늘의 명언 추천받기</button>
+        <button class="secondary-btn" id="resetButton">처음으로</button>
+      </div>
+
+      <div class="status" id="statusText">아직 명언이 표시되지 않았습니다.</div>
     </section>
-
-    <section class="dashboard">
-      <aside class="panel">
-        <h2>명단 정보</h2>
-        <div class="summary">
-          <div class="summary-card">
-            <div class="summary-label">총 선수 수</div>
-            <div class="summary-value" id="fighterCount">0명</div>
-            <div class="summary-note">버튼을 누르면 현재 준비된 선수 수가 표시됩니다.</div>
-          </div>
-          <div class="summary-card">
-            <div class="summary-label">포함 체급</div>
-            <div class="summary-value" id="divisionCount">0개</div>
-            <div class="summary-note">플라이급부터 헤비급까지 대표 체급들을 담았습니다.</div>
-          </div>
-          <div class="summary-card">
-            <div class="summary-label">표시 방식</div>
-            <div class="summary-note">
-              버튼 클릭 시 카드가 순차적으로 등장하도록 구성했습니다.
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      <main class="panel">
-        <div class="roster-header">
-          <div>
-            <h2>UFC 선수 명단</h2>
-            <p>대표 선수 예시를 체급과 출신 국가, 주요 스타일과 함께 보여줍니다.</p>
-          </div>
-        </div>
-
-        <div id="rosterContainer" class="empty">
-          버튼을 누르면 이 영역에 UFC 선수 명단이 나타납니다.
-        </div>
-      </main>
-    </section>
-  </div>
+  </main>
 
   <script>
-    const fighters = [
-      { name: "Alexandre Pantoja", division: "Flyweight", country: "Brazil", style: "Well-rounded / Grappling" },
-      { name: "Brandon Moreno", division: "Flyweight", country: "Mexico", style: "Boxing / Scrambling" },
-      { name: "Merab Dvalishvili", division: "Bantamweight", country: "Georgia", style: "Pressure Wrestling" },
-      { name: "Sean O'Malley", division: "Bantamweight", country: "United States", style: "Precision Striking" },
-      { name: "Alexander Volkanovski", division: "Featherweight", country: "Australia", style: "Pressure Boxing" },
-      { name: "Max Holloway", division: "Featherweight", country: "United States", style: "Volume Striking" },
-      { name: "Islam Makhachev", division: "Lightweight", country: "Russia", style: "Sambo / Grappling" },
-      { name: "Charles Oliveira", division: "Lightweight", country: "Brazil", style: "Muay Thai / BJJ" },
-      { name: "Belal Muhammad", division: "Welterweight", country: "United States", style: "Pressure Wrestling" },
-      { name: "Leon Edwards", division: "Welterweight", country: "United Kingdom", style: "Kickboxing" },
-      { name: "Dricus du Plessis", division: "Middleweight", country: "South Africa", style: "Aggressive MMA" },
-      { name: "Israel Adesanya", division: "Middleweight", country: "New Zealand", style: "Kickboxing" },
-      { name: "Alex Pereira", division: "Light Heavyweight", country: "Brazil", style: "Power Striking" },
-      { name: "Magomed Ankalaev", division: "Light Heavyweight", country: "Russia", style: "Kickboxing / Wrestling" },
-      { name: "Jon Jones", division: "Heavyweight", country: "United States", style: "Creative MMA" },
-      { name: "Tom Aspinall", division: "Heavyweight", country: "United Kingdom", style: "Boxing / Jiu-Jitsu" }
+    const quotes = [
+      {
+        text: "작은 진전도 진전이다.",
+        author: "익명",
+        message: "완벽하지 않아도 괜찮습니다. 오늘의 한 걸음이 내일의 흐름을 만듭니다."
+      },
+      {
+        text: "성공은 매일 반복한 작은 노력들의 합이다.",
+        author: "로버트 콜리어",
+        message: "거창한 도약보다 꾸준한 반복이 더 멀리 데려다줍니다."
+      },
+      {
+        text: "할 수 있다고 믿는 순간, 이미 절반은 이룬 것이다.",
+        author: "시어도어 루스벨트",
+        message: "시작하기 전의 마음가짐이 오늘의 속도를 결정합니다."
+      },
+      {
+        text: "늦었다고 생각할 때가 아니라, 시작하기 가장 좋은 때다.",
+        author: "익명",
+        message: "타이밍보다 중요한 건 지금 움직이겠다는 결정입니다."
+      },
+      {
+        text: "행복은 목적지가 아니라 살아가는 방식이다.",
+        author: "버턴 힐스",
+        message: "오늘 하루를 대하는 태도 자체가 이미 큰 의미가 있습니다."
+      },
+      {
+        text: "넘어졌다는 사실보다 다시 일어나는 선택이 더 중요하다.",
+        author: "빈스 롬바르디",
+        message: "실수보다 회복력이 더 오래 남습니다. 오늘도 다시 가면 됩니다."
+      }
     ];
 
-    const showRosterButton = document.getElementById("showRosterButton");
+    const recommendButton = document.getElementById("recommendButton");
     const resetButton = document.getElementById("resetButton");
-    const rosterContainer = document.getElementById("rosterContainer");
-    const statusBox = document.getElementById("statusBox");
-    const fighterCount = document.getElementById("fighterCount");
-    const divisionCount = document.getElementById("divisionCount");
+    const quotePanel = document.getElementById("quotePanel");
+    const quoteText = document.getElementById("quoteText");
+    const authorText = document.getElementById("authorText");
+    const messageText = document.getElementById("messageText");
+    const statusText = document.getElementById("statusText");
+    const todayText = document.getElementById("todayText");
 
-    function shuffle(list) {
-      const copied = [...list];
-      for (let i = copied.length - 1; i > 0; i -= 1) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [copied[i], copied[j]] = [copied[j], copied[i]];
-      }
-      return copied;
+    function formatToday() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth() + 1;
+      const date = today.getDate();
+      return `${year}년 ${month}월 ${date}일의 추천`;
     }
 
-    function renderRoster() {
-      const shuffledFighters = shuffle(fighters);
-      const divisions = new Set(shuffledFighters.map((fighter) => fighter.division));
-
-      rosterContainer.className = "grid";
-      rosterContainer.innerHTML = shuffledFighters.map((fighter, index) => `
-        <article class="fighter-card" style="animation-delay: ${index * 0.06}s">
-          <span class="weight-class">${fighter.division}</span>
-          <h3 class="fighter-name">${fighter.name}</h3>
-          <p class="fighter-meta">국가: ${fighter.country}</p>
-          <p class="fighter-meta">스타일: ${fighter.style}</p>
-        </article>
-      `).join("");
-
-      fighterCount.textContent = `${shuffledFighters.length}명`;
-      divisionCount.textContent = `${divisions.size}개`;
-      statusBox.textContent = `선수 명단이 표시되었습니다. 현재 ${shuffledFighters.length}명의 대표 선수를 확인할 수 있습니다.`;
+    function getRandomQuote() {
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      return quotes[randomIndex];
     }
 
-    function resetRoster() {
-      rosterContainer.className = "empty";
-      rosterContainer.innerHTML = "버튼을 누르면 이 영역에 UFC 선수 명단이 나타납니다.";
-      fighterCount.textContent = "0명";
-      divisionCount.textContent = "0개";
-      statusBox.textContent = "아직 명단이 표시되지 않았습니다.";
+    function renderQuote() {
+      const quote = getRandomQuote();
+
+      quotePanel.classList.remove("fade-in");
+      void quotePanel.offsetWidth;
+      quotePanel.classList.add("fade-in");
+
+      quoteText.textContent = `"${quote.text}"`;
+      authorText.textContent = `- ${quote.author}`;
+      messageText.textContent = quote.message;
+      statusText.textContent = "오늘의 명언이 준비되었습니다. 마음에 드는 문장을 천천히 읽어보세요.";
     }
 
-    showRosterButton.addEventListener("click", renderRoster);
-    resetButton.addEventListener("click", resetRoster);
+    function resetQuote() {
+      quoteText.textContent = "\"오늘의 명언을 아직 추천받지 않았습니다.\"";
+      authorText.textContent = "버튼을 눌러 시작해보세요.";
+      messageText.textContent = "지금의 기분에 어울리는 한 문장을 골라 보여드립니다.";
+      statusText.textContent = "아직 명언이 표시되지 않았습니다.";
+    }
+
+    todayText.textContent = formatToday();
+    recommendButton.addEventListener("click", renderQuote);
+    resetButton.addEventListener("click", resetQuote);
   </script>
 </body>
 </html>
