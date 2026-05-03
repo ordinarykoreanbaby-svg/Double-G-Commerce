@@ -22,6 +22,19 @@
       --shadow: 0 24px 60px rgba(93, 71, 48, 0.16);
     }
 
+    body[data-theme="dark"] {
+      --bg-top: #10151e;
+      --bg-bottom: #1b2430;
+      --panel: rgba(15, 20, 28, 0.86);
+      --panel-border: rgba(255, 255, 255, 0.09);
+      --text: #f5f1ea;
+      --muted: #b9b1a7;
+      --accent: #f29f58;
+      --accent-deep: #ffd1a6;
+      --accent-soft: #2a1f17;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -38,6 +51,12 @@
 
     .page {
       width: min(920px, 100%);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 14px;
     }
 
     .card {
@@ -189,6 +208,17 @@
       border: 1px solid rgba(98, 75, 46, 0.12);
     }
 
+    .theme-toggle {
+      padding: 12px 18px;
+      border-radius: 999px;
+      color: var(--text);
+      font-size: 0.94rem;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(98, 75, 46, 0.12);
+      box-shadow: 0 10px 24px rgba(93, 71, 48, 0.08);
+    }
+
     button:hover {
       transform: translateY(-2px);
       filter: brightness(1.03);
@@ -240,6 +270,11 @@
         flex-direction: column;
       }
 
+      .topbar {
+        margin-bottom: 12px;
+      }
+
+      .theme-toggle,
       .primary-btn,
       .secondary-btn {
         width: 100%;
@@ -249,6 +284,10 @@
 </head>
 <body>
   <main class="page">
+    <div class="topbar">
+      <button class="theme-toggle" id="themeToggleButton">다크모드로 보기</button>
+    </div>
+
     <section class="card">
       <span class="eyebrow">Daily Quote</span>
       <h1>버튼을 누르면<br />오늘의 명언을 추천해드려요</h1>
@@ -316,6 +355,17 @@
     const messageText = document.getElementById("messageText");
     const statusText = document.getElementById("statusText");
     const todayText = document.getElementById("todayText");
+    const themeToggleButton = document.getElementById("themeToggleButton");
+
+    function updateThemeButton(theme) {
+      themeToggleButton.textContent = theme === "dark" ? "화이트모드로 보기" : "다크모드로 보기";
+    }
+
+    function applyTheme(theme) {
+      document.body.dataset.theme = theme;
+      localStorage.setItem("quote-theme", theme);
+      updateThemeButton(theme);
+    }
 
     function formatToday() {
       const today = new Date();
@@ -350,9 +400,16 @@
       statusText.textContent = "아직 명언이 표시되지 않았습니다.";
     }
 
+    const savedTheme = localStorage.getItem("quote-theme") || "light";
+    applyTheme(savedTheme);
+
     todayText.textContent = formatToday();
     recommendButton.addEventListener("click", renderQuote);
     resetButton.addEventListener("click", resetQuote);
+    themeToggleButton.addEventListener("click", () => {
+      const nextTheme = document.body.dataset.theme === "dark" ? "light" : "dark";
+      applyTheme(nextTheme);
+    });
   </script>
 </body>
 </html>
