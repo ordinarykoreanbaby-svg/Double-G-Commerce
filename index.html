@@ -12,26 +12,30 @@
     :root {
       --bg-top: #f7efe4;
       --bg-bottom: #dbe7d3;
-      --panel: rgba(255, 252, 247, 0.82);
+      --panel: rgba(255, 252, 247, 0.84);
       --panel-border: rgba(98, 75, 46, 0.12);
       --text: #2d241d;
       --muted: #6f6255;
       --accent: #b66a2f;
       --accent-deep: #8f4d20;
       --accent-soft: #f1dcc7;
+      --subtle: #fff8f0;
+      --input-bg: #ffffff;
       --shadow: 0 24px 60px rgba(93, 71, 48, 0.16);
     }
 
     body[data-theme="dark"] {
       --bg-top: #10151e;
       --bg-bottom: #1b2430;
-      --panel: rgba(15, 20, 28, 0.86);
-      --panel-border: rgba(255, 255, 255, 0.09);
+      --panel: rgba(15, 20, 28, 0.88);
+      --panel-border: rgba(255, 255, 255, 0.08);
       --text: #f5f1ea;
       --muted: #b9b1a7;
       --accent: #f29f58;
       --accent-deep: #ffd1a6;
       --accent-soft: #2a1f17;
+      --subtle: rgba(255, 255, 255, 0.04);
+      --input-bg: rgba(255, 255, 255, 0.05);
       --shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
     }
 
@@ -44,13 +48,12 @@
         radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 28%),
         radial-gradient(circle at bottom right, rgba(182, 106, 47, 0.14), transparent 30%),
         linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-      display: grid;
-      place-items: center;
-      padding: 24px;
+      padding: 28px 16px 40px;
     }
 
     .page {
-      width: min(920px, 100%);
+      width: min(940px, 100%);
+      margin: 0 auto;
     }
 
     .topbar {
@@ -59,10 +62,21 @@
       margin-bottom: 14px;
     }
 
-    .card {
-      position: relative;
-      overflow: hidden;
-      padding: 36px;
+    .theme-toggle {
+      border: 1px solid var(--panel-border);
+      background: rgba(255, 255, 255, 0.45);
+      color: var(--text);
+      padding: 12px 18px;
+      border-radius: 999px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      box-shadow: 0 10px 24px rgba(93, 71, 48, 0.08);
+    }
+
+    .shell {
+      padding: 34px;
       border-radius: 32px;
       background: var(--panel);
       border: 1px solid var(--panel-border);
@@ -70,34 +84,8 @@
       backdrop-filter: blur(18px);
     }
 
-    .card::before,
-    .card::after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .card::before {
-      width: 220px;
-      height: 220px;
-      right: -70px;
-      top: -70px;
-      background: radial-gradient(circle, rgba(182, 106, 47, 0.18), transparent 70%);
-    }
-
-    .card::after {
-      width: 180px;
-      height: 180px;
-      left: -50px;
-      bottom: -60px;
-      background: radial-gradient(circle, rgba(123, 157, 102, 0.16), transparent 70%);
-    }
-
     .eyebrow {
       display: inline-flex;
-      align-items: center;
-      gap: 8px;
       padding: 8px 14px;
       border-radius: 999px;
       background: rgba(182, 106, 47, 0.12);
@@ -110,38 +98,41 @@
 
     h1 {
       margin: 18px 0 12px;
-      font-size: clamp(2.4rem, 5vw, 4.6rem);
-      line-height: 0.96;
+      font-size: clamp(2.3rem, 5vw, 4.4rem);
+      line-height: 0.98;
       letter-spacing: -0.05em;
     }
 
-    .intro {
-      max-width: 620px;
+    p {
       margin: 0;
       color: var(--muted);
-      font-size: 1.04rem;
       line-height: 1.7;
     }
 
     .today {
-      margin-top: 20px;
+      margin-top: 18px;
       color: var(--accent-deep);
       font-size: 0.96rem;
       font-weight: 700;
     }
 
     .quote-panel {
-      margin-top: 30px;
+      margin-top: 28px;
       padding: 30px;
       border-radius: 28px;
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 248, 239, 0.92)),
         var(--accent-soft);
       border: 1px solid rgba(182, 106, 47, 0.14);
-      min-height: 280px;
+      min-height: 240px;
       display: grid;
-      gap: 18px;
-      align-content: start;
+      gap: 16px;
+    }
+
+    body[data-theme="dark"] .quote-panel {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+        var(--accent-soft);
     }
 
     .label {
@@ -154,23 +145,19 @@
 
     blockquote {
       margin: 0;
-      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      font-size: clamp(1.5rem, 3vw, 2.3rem);
       line-height: 1.45;
       font-weight: 800;
       letter-spacing: -0.03em;
     }
 
     .author {
-      margin: 0;
       color: var(--accent-deep);
       font-size: 1rem;
       font-weight: 700;
     }
 
     .message {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.7;
       font-size: 0.98rem;
     }
 
@@ -178,48 +165,40 @@
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
-      margin-top: 26px;
+      margin-top: 24px;
     }
 
     button {
       border: none;
       cursor: pointer;
       font-family: inherit;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+      transition: transform 0.2s ease, filter 0.2s ease, background 0.2s ease;
     }
 
-    .primary-btn {
-      padding: 16px 24px;
+    .primary-btn,
+    .secondary-btn,
+    .submit-btn {
+      padding: 16px 22px;
       border-radius: 18px;
-      color: #fffaf5;
       font-size: 1rem;
       font-weight: 900;
+    }
+
+    .primary-btn,
+    .submit-btn {
+      color: #fffaf5;
       background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
       box-shadow: 0 18px 30px rgba(143, 77, 32, 0.22);
     }
 
     .secondary-btn {
-      padding: 16px 22px;
-      border-radius: 18px;
       color: var(--text);
-      font-size: 0.98rem;
-      font-weight: 800;
-      background: rgba(255, 255, 255, 0.55);
-      border: 1px solid rgba(98, 75, 46, 0.12);
+      background: rgba(255, 255, 255, 0.48);
+      border: 1px solid var(--panel-border);
     }
 
-    .theme-toggle {
-      padding: 12px 18px;
-      border-radius: 999px;
-      color: var(--text);
-      font-size: 0.94rem;
-      font-weight: 800;
-      background: rgba(255, 255, 255, 0.55);
-      border: 1px solid rgba(98, 75, 46, 0.12);
-      box-shadow: 0 10px 24px rgba(93, 71, 48, 0.08);
-    }
-
-    button:hover {
+    button:hover,
+    .theme-toggle:hover {
       transform: translateY(-2px);
       filter: brightness(1.03);
     }
@@ -228,11 +207,81 @@
       margin-top: 18px;
       padding: 14px 16px;
       border-radius: 18px;
-      background: rgba(255, 255, 255, 0.5);
-      border: 1px solid rgba(98, 75, 46, 0.1);
+      background: rgba(255, 255, 255, 0.36);
+      border: 1px solid var(--panel-border);
       color: var(--muted);
-      line-height: 1.6;
       font-size: 0.94rem;
+    }
+
+    .divider {
+      height: 1px;
+      margin: 34px 0;
+      background: linear-gradient(90deg, transparent, var(--panel-border), transparent);
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 1.7rem;
+      color: var(--text);
+    }
+
+    .partnership-box {
+      margin-top: 22px;
+      padding: 26px 22px;
+      border-radius: 24px;
+      background: var(--subtle);
+      border: 1px solid var(--panel-border);
+    }
+
+    .form-note,
+    .helper {
+      font-size: 0.94rem;
+    }
+
+    .partnership-form {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .input,
+    .textarea {
+      width: 100%;
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      font: inherit;
+      color: var(--text);
+      background: var(--input-bg);
+    }
+
+    .textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .input:focus,
+    .textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(9, 132, 227, 0.12);
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .helper {
+      margin-top: 14px;
     }
 
     .fade-in {
@@ -251,18 +300,14 @@
       }
     }
 
-    @media (max-width: 640px) {
-      body {
-        padding: 14px;
-      }
-
-      .card {
+    @media (max-width: 680px) {
+      .shell {
         padding: 22px;
         border-radius: 24px;
       }
 
-      .quote-panel {
-        min-height: 320px;
+      .quote-panel,
+      .partnership-box {
         padding: 22px;
       }
 
@@ -270,13 +315,10 @@
         flex-direction: column;
       }
 
-      .topbar {
-        margin-bottom: 12px;
-      }
-
       .theme-toggle,
       .primary-btn,
-      .secondary-btn {
+      .secondary-btn,
+      .submit-btn {
         width: 100%;
       }
     }
@@ -288,10 +330,10 @@
       <button class="theme-toggle" id="themeToggleButton">다크모드로 보기</button>
     </div>
 
-    <section class="card">
+    <section class="shell">
       <span class="eyebrow">Daily Quote</span>
       <h1>버튼을 누르면<br />오늘의 명언을 추천해드려요</h1>
-      <p class="intro">
+      <p>
         짧은 문장 하나가 하루의 분위기를 바꿀 때가 있습니다.
         아래 버튼을 눌러 오늘 마음에 남길 명언을 만나보세요.
       </p>
@@ -300,7 +342,7 @@
       <div class="quote-panel fade-in" id="quotePanel">
         <div class="label">Today's Pick</div>
         <blockquote id="quoteText">"오늘의 명언을 아직 추천받지 않았습니다."</blockquote>
-        <p class="author" id="authorText">버튼을 눌러 시작해보세요.</p>
+        <div class="author" id="authorText">버튼을 눌러 시작해보세요.</div>
         <p class="message" id="messageText">지금의 기분에 어울리는 한 문장을 골라 보여드립니다.</p>
       </div>
 
@@ -310,6 +352,45 @@
       </div>
 
       <div class="status" id="statusText">아직 명언이 표시되지 않았습니다.</div>
+
+      <div class="divider"></div>
+
+      <h2 class="section-title">제휴 문의</h2>
+      <p>브랜드 협업, 광고, 콘텐츠 제휴 문의를 아래 폼으로 간단히 남겨주세요.</p>
+
+      <div class="partnership-box">
+        <p class="form-note">
+          Formspree를 사용하려면 아래 폼의 `action` 주소에서 `your-form-id` 부분을 본인 Formspree 폼 ID로 바꾸면 됩니다.
+        </p>
+
+        <form class="partnership-form" action="https://formspree.io/f/your-form-id" method="POST">
+          <input type="hidden" name="_subject" value="새 제휴 문의가 도착했습니다" />
+
+          <div>
+            <label class="field-label" for="name">이름</label>
+            <input class="input" type="text" id="name" name="name" placeholder="홍길동" required />
+          </div>
+
+          <div>
+            <label class="field-label" for="email">이메일</label>
+            <input class="input" type="email" id="email" name="email" placeholder="name@example.com" required />
+          </div>
+
+          <div>
+            <label class="field-label" for="company">회사명</label>
+            <input class="input" type="text" id="company" name="company" placeholder="회사 또는 브랜드명" />
+          </div>
+
+          <div>
+            <label class="field-label" for="message">문의 내용</label>
+            <textarea class="textarea" id="message" name="message" placeholder="제휴 내용과 연락 가능한 정보를 남겨주세요." required></textarea>
+          </div>
+
+          <button class="submit-btn" type="submit">제휴 문의 보내기</button>
+        </form>
+
+        <p class="helper">Formspree 폼 ID만 연결하면 별도 백엔드 없이 이메일로 문의를 받을 수 있습니다.</p>
+      </div>
     </section>
   </main>
 
